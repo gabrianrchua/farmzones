@@ -16,7 +16,7 @@ commands:
     usage: /farmzones create [name]
   farmzones add:
     description: Add zones to a FarmZones farm
-    usage: /farmzones add [farm name] [zone name] [pos1|pos2]
+    usage: /farmzones add [farm name] [zone name] [pos1|pos2] [wheat|carrot|potato|beetroot|netherwart]
   farmzones delete farm:
     description: Delete FarmZones farm and all its zones
     usage: /farmzones delete farm [farm name]
@@ -29,3 +29,9 @@ commands:
   farmzones replant:
     description: Replant a FarmZones farm
     usage: /farmzones replant [farm name]
+  farmzones list:
+    description: Lists all owned FarmZones farms
+    usage: /farmzones list
+  farmzones detail:
+    description: Lists details of a FarmZones farm
+    usage: /farmzones detail [farm name]

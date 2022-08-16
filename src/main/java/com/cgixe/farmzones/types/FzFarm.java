@@ -1,5 +1,7 @@
 package com.cgixe.farmzones.types;
 
+import com.cgixe.farmzones.utils.Message;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,15 @@ public class FzFarm {
     @Override
     public int hashCode() {
         return Objects.hash(name, zones);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder(("&dFarm \"" + name + "\""));
+        for (FzZone z : zones) {
+            str.append('\n').append(z.toString());
+        }
+        return str.toString();
     }
 
     public String getName() {

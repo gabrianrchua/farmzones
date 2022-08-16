@@ -2,11 +2,12 @@ package com.cgixe.farmzones.commands;
 
 import com.cgixe.farmzones.handlers.AddZoneHandler;
 import com.cgixe.farmzones.handlers.CreateFarmHandler;
+import com.cgixe.farmzones.handlers.DeleteHandler;
 import com.cgixe.farmzones.types.CropType;
+import com.cgixe.farmzones.types.FzFarm;
 import com.cgixe.farmzones.types.FzLocation;
 import com.cgixe.farmzones.types.FzZone;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import com.cgixe.farmzones.utils.Message;
 import org.bukkit.command.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -41,7 +42,7 @@ public class FarmzonesCommands implements CommandExecutor {
         int argLength = args.length;
         if (argLength == 0) {
             for (String s : HELP_LINES) {
-                SendColoredMessage(sender, s);
+                Message.SendColoredMessage(sender, s);
             }
             return true; // return immediately upon help message
         }
@@ -51,13 +52,13 @@ public class FarmzonesCommands implements CommandExecutor {
                     if (argLength == 2) {
                         String createFarmName = args[1];
                         if (CreateFarmHandler.createFarm(createFarmName, player.getName()) != null) {
-                            SendColoredMessage(player, "&aFarm " + createFarmName + " created!");
+                            Message.SendColoredMessage(player, "&aFarm " + createFarmName + " created!");
                         } else {
-                            SendErrorMessage(player, "Farm " + createFarmName + " already exists.");
+                            Message.SendErrorMessage(player, "Farm " + createFarmName + " already exists.");
                         }
                     } else {
-                        SendErrorMessage(sender, "Expected farm name to create.");
-                        SendErrorMessage(sender, "Usage: /farmzones create [farm name]");
+                        Message.SendErrorMessage(sender, "Expected farm name to create.");
+                        Message.SendErrorMessage(sender, "Usage: /farmzones create [farm name]");
                     }
                     break;
                 case "add":
@@ -69,24 +70,24 @@ public class FarmzonesCommands implements CommandExecutor {
                         try {
                             type = CropType.valueOf(args[4].toUpperCase());
                         } catch (Exception ex) {
-                            SendErrorMessage(player, "Crop type \"" + args[4] + "\" is invalid. Expected \"wheat\" \"carrot\" \"potato\" \"beetroot\" \"netherwart\"");
-                            SendErrorMessage(sender, "Usage: /farmzones add [farm name] [zone name] [pos1|pos2] [wheat|carrot|potato|beetroot|netherwart]");
+                            Message.SendErrorMessage(player, "Crop type \"" + args[4] + "\" is invalid. Expected \"wheat\" \"carrot\" \"potato\" \"beetroot\" \"netherwart\"");
+                            Message.SendErrorMessage(sender, "Usage: /farmzones add [farm name] [zone name] [pos1|pos2] [wheat|carrot|potato|beetroot|netherwart]");
                             return true;
                         }
                         FzLocation playerLocation = new FzLocation(player.getLocation());
 
                         FzZone newZone = AddZoneHandler.addZone(player.getName(), farmName, zoneName, type, isPosOne, playerLocation);
                         if (newZone != null) {
-                            SendColoredMessage(player, "&aAdded position + " + (isPosOne ? '1' : '2') + " to zone " + zoneName + " in farm " + farmName + ".");
+                            Message.SendColoredMessage(player, "&aAdded position + " + (isPosOne ? '1' : '2') + " to zone " + zoneName + " in farm " + farmName + ".");
                             if (newZone.isComplete()) {
-                                SendColoredMessage(player, "&aZone is now complete!");
+                                Message.SendColoredMessage(player, "&aZone is now complete!");
                             }
                         } else {
-                            SendErrorMessage(player, "Farm " + farmName + " does not exist!");
+                            Message.SendErrorMessage(player, "Farm " + farmName + " does not exist!");
                         }
                     } else {
-                        SendErrorMessage(sender, "Expected farm name, zone name, position number, and crop type.");
-                        SendErrorMessage(sender, "Usage: /farmzones add [farm name] [zone name] [pos1|pos2] [wheat|carrot|potato|beetroot|netherwart]");
+                        Message.SendErrorMessage(sender, "Expected farm name, zone name, position number, and crop type.");
+                        Message.SendErrorMessage(sender, "Usage: /farmzones add [farm name] [zone name] [pos1|pos2] [wheat|carrot|potato|beetroot|netherwart]");
                     }
                     break;
                 case "delete":
@@ -95,70 +96,78 @@ public class FarmzonesCommands implements CommandExecutor {
                         if (isDeletingFarm) {
                             if (argLength == 3) {
                                 String deleteFarm = args[2];
-                                SendColoredMessage(player, "&aFarm " + deleteFarm + " deleted!");
+                                if (DeleteHandler.DeleteFarm(player.getName(), deleteFarm)) {
+                                    Message.SendColoredMessage(player, "&aFarm " + deleteFarm + " deleted!");
+                                } else {
+                                    Message.SendErrorMessage(player, "Farm " + deleteFarm + " does not exist!");
+                                }
                             } else {
-                                SendErrorMessage(sender, "Expected farm name to delete.");
-                                SendErrorMessage(sender, "Usage: /farmzones delete farm [farm name]");
+                                Message.SendErrorMessage(sender, "Expected farm name to delete.");
+                                Message.SendErrorMessage(sender, "Usage: /farmzones delete farm [farm name]");
                             }
                         } else {
                             if (argLength == 4) {
                                 String deleteFromFarm = args[2];
                                 String deleteZone = args[3];
-                                SendColoredMessage(player, "&aZone " + deleteZone + " from farm " + deleteFromFarm + " deleted!");
+                                if (DeleteHandler.DeleteZone(player.getName(), deleteFromFarm, deleteZone)) {
+                                    Message.SendColoredMessage(player, "&aZone " + deleteZone + " from farm " + deleteFromFarm + " deleted!");
+                                } else {
+                                    Message.SendErrorMessage(player, "Either farm " + deleteFromFarm + " or zone " + deleteZone + " does not exist!");
+                                }
                             } else {
-                                SendErrorMessage(sender, "Expected farm name and zone name.");
-                                SendErrorMessage(sender, "Usage: /farmzones delete zone [farm name] [zone name]");
+                                Message.SendErrorMessage(sender, "Expected farm name and zone name.");
+                                Message.SendErrorMessage(sender, "Usage: /farmzones delete zone [farm name] [zone name]");
                             }
                         }
                     } else {
-                        SendErrorMessage(sender, "Expected \"delete farm\" or \"delete zone\".");
-                        SendErrorMessage(sender, "Usage: /farmzones delete [farm|zone] [farm name] [zone name]");
+                        Message.SendErrorMessage(sender, "Expected \"delete farm\" or \"delete zone\".");
+                        Message.SendErrorMessage(sender, "Usage: /farmzones delete [farm|zone] [farm name] [zone name]");
                     }
                     break;
                 case "harvest":
                     if (argLength == 2) {
                         String farmToHarvest = args[1];
-                        SendColoredMessage(player, "&aFarm " + farmToHarvest + " harvested!");
+                        Message.SendColoredMessage(player, "&aFarm " + farmToHarvest + " harvested!");
                     } else {
-                        SendErrorMessage(sender, "Expected farm to harvest.");
-                        SendErrorMessage(sender, "Usage: /farmzones harvest [farm name]");
+                        Message.SendErrorMessage(sender, "Expected farm to harvest.");
+                        Message.SendErrorMessage(sender, "Usage: /farmzones harvest [farm name]");
                     }
                     break;
                 case "replant":
                     if (argLength == 2) {
                         String farmToReplant = args[1];
-                        SendColoredMessage(player, "&aFarm " + farmToReplant + " replanted!");
+                        Message.SendColoredMessage(player, "&aFarm " + farmToReplant + " replanted!");
                     } else {
-                        SendErrorMessage(sender, "Expected farm to replant.");
-                        SendErrorMessage(sender, "Usage: /farmzones replant [farm name]");
+                        Message.SendErrorMessage(sender, "Expected farm to replant.");
+                        Message.SendErrorMessage(sender, "Usage: /farmzones replant [farm name]");
                     }
                     break;
                 case "list":
-                    // TODO: make this print prettier
-                    SendColoredMessage(player, manager.getPlayer(player.getName()).getFarms().toString());
+                    Message.SendColoredMessage(player, manager.getPlayer(player.getName()).getFarmListString());
+                    break;
                 case "detail":
                     if (argLength == 2) {
-                        // TODO: make this print prettier
-                        // TODO: add check for nonexistent farm
                         String farmName = args[1];
-                        SendColoredMessage(player, manager.getPlayer(player.getName()).getFarm(farmName).toString());
+                        FzFarm farm = manager.getPlayer(player.getName()).getFarm(farmName);
+                        if (farm != null) {
+                            Message.SendColoredMessage(player, farm.toString());
+                        } else {
+                            Message.SendErrorMessage(player, "Farm " + farmName + " does not exist!");
+                        }
                     }
+                    break;
+                case "help":
+                    Bukkit.dispatchCommand(sender, "farmzones");
+                    break;
                 default:
                     Bukkit.dispatchCommand(sender, "farmzones");
-                    SendErrorMessage(sender, "FarmZones: Unknown command.");
+                    Message.SendErrorMessage(sender, "FarmZones: Unknown command.");
                     break;
             }
         } else {
             // command requires player to run it
-            SendErrorMessage(sender, "This command must be run by a player.");
+            Message.SendErrorMessage(sender, "This command must be run by a player.");
         }
         return true;
-    }
-
-    private void SendErrorMessage(CommandSender sender, String message) {
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cFarmZones: ") + message);
-    }
-    private void SendColoredMessage(CommandSender sender, String message) {
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
     }
 }

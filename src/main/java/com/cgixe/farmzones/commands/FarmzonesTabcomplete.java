@@ -13,7 +13,7 @@ public class FarmzonesTabcomplete implements TabCompleter {
         int argLength = args.length;
         List<String> subCommands = new ArrayList<>();
         if (argLength == 1) {
-            subCommands.addAll(List.of("create", "add", "delete", "harvest", "replant"));
+            subCommands.addAll(List.of("create", "add", "delete", "harvest", "replant", "list", "detail"));
             return subCommands;
         } else if (argLength == 2) {
             if (args[0].equals("delete")) {

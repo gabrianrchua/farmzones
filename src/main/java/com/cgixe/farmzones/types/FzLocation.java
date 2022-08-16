@@ -32,6 +32,11 @@ public class FzLocation {
         return Objects.hash(x, y, z);
     }
 
+    @Override
+    public String toString() {
+        return x + "," + y + "," + z;
+    }
+
     public int getX() {
         return x;
     }

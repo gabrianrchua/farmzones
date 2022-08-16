@@ -1,6 +1,5 @@
 package com.cgixe.farmzones.types;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 

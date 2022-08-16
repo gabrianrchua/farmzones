@@ -1,5 +1,7 @@
 package com.cgixe.farmzones.types;
 
+import com.cgixe.farmzones.utils.Message;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,18 @@ public class FzPlayer {
 
     public List<FzFarm> getFarms() {
         return farms;
+    }
+
+    public String getFarmListString() {
+        if (farms.size() == 0) {
+            return Message.ColorizeMessage("&You don't have any farms yet!");
+        }
+        StringBuilder str = new StringBuilder("&9");
+        str.append(farms.get(0).getName());
+        for (int i = 1; i < farms.size(); i++) {
+            str.append('\n').append(farms.get(i).getName());
+        }
+        return Message.ColorizeMessage(str.toString());
     }
 
     @Nullable

@@ -1,5 +1,7 @@
 package com.cgixe.farmzones.types;
 
+import com.cgixe.farmzones.utils.Message;
+
 import java.util.Objects;
 
 /***
@@ -39,6 +41,11 @@ public class FzZone {
     @Override
     public int hashCode() {
         return Objects.hash(cropType, name, pos1, pos2);
+    }
+
+    @Override
+    public String toString() {
+        return Message.ColorizeMessage("  &9Zone \"" + name + "\"\n    &7" + cropType.toString().toLowerCase() + "\n    " + pos1.toString() + " to " + pos2.toString());
     }
 
     // getters
