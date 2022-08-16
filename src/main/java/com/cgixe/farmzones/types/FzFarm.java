@@ -41,6 +41,10 @@ public class FzFarm {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder(("&dFarm \"" + name + "\""));
+        if (zones.size() == 0) {
+            str.append("\n&7  This farm has no zones!");
+            return str.toString();
+        }
         for (FzZone z : zones) {
             str.append('\n').append(z.toString());
         }
@@ -62,5 +66,13 @@ public class FzFarm {
             }
         }
         return null;
+    }
+
+    public List<String> getZoneList() {
+        List<String> zoneList = new ArrayList<>();
+        for (FzZone z : zones) {
+            zoneList.add(z.getName());
+        }
+        return zoneList;
     }
 }

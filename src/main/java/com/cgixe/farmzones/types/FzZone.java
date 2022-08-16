@@ -45,7 +45,7 @@ public class FzZone {
 
     @Override
     public String toString() {
-        return Message.ColorizeMessage("  &9Zone \"" + name + "\"\n    &7" + cropType.toString().toLowerCase() + "\n    " + pos1.toString() + " to " + pos2.toString());
+        return Message.ColorizeMessage("  &9Zone \"" + name + "\"\n    &7" + cropType.toString().toLowerCase() + "\n    &7" + pos1.toString() + " to " + pos2.toString());
     }
 
     // getters

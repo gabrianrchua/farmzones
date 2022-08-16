@@ -49,14 +49,21 @@ public class FzPlayer {
 
     public String getFarmListString() {
         if (farms.size() == 0) {
-            return Message.ColorizeMessage("&You don't have any farms yet!");
+            return Message.ColorizeMessage("&9You don't have any farms yet!");
         }
         StringBuilder str = new StringBuilder("&9");
         str.append(farms.get(0).getName());
         for (int i = 1; i < farms.size(); i++) {
-            str.append('\n').append(farms.get(i).getName());
+            str.append("\n&9").append(farms.get(i).getName());
         }
         return Message.ColorizeMessage(str.toString());
+    }
+    public List<String> getFarmList() {
+        List<String> farmList = new ArrayList<>();
+        for (FzFarm farm : farms) {
+            farmList.add(farm.getName());
+        }
+        return farmList;
     }
 
     @Nullable

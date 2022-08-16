@@ -22,7 +22,7 @@ public class FarmzonesCommands implements CommandExecutor {
             "    &7Print this help message",
             "&9farmzones create [name]",
             "    &7Create a new FarmZones farm",
-            "&9/farmzones add [farm name] [zone name] [pos1|pos2]",
+            "&9/farmzones add [farm name] [zone name] [pos1|pos2] [wheat|carrot|potato|beetroot|netherwart]",
             "    &7Add zones to a FarmZones farm",
             "&9/farmzones delete farm [farm name]",
             "    &7Delete FarmZones farm and all its zones",
@@ -78,7 +78,7 @@ public class FarmzonesCommands implements CommandExecutor {
 
                         FzZone newZone = AddZoneHandler.addZone(player.getName(), farmName, zoneName, type, isPosOne, playerLocation);
                         if (newZone != null) {
-                            Message.SendColoredMessage(player, "&aAdded position + " + (isPosOne ? '1' : '2') + " to zone " + zoneName + " in farm " + farmName + ".");
+                            Message.SendColoredMessage(player, "&aAdded position " + (isPosOne ? '1' : '2') + " to zone " + zoneName + " in farm " + farmName + ".");
                             if (newZone.isComplete()) {
                                 Message.SendColoredMessage(player, "&aZone is now complete!");
                             }
@@ -143,6 +143,7 @@ public class FarmzonesCommands implements CommandExecutor {
                     }
                     break;
                 case "list":
+                    Message.SendColoredMessage(player, "&dYour FarmZones farms:");
                     Message.SendColoredMessage(player, manager.getPlayer(player.getName()).getFarmListString());
                     break;
                 case "detail":
@@ -154,6 +155,9 @@ public class FarmzonesCommands implements CommandExecutor {
                         } else {
                             Message.SendErrorMessage(player, "Farm " + farmName + " does not exist!");
                         }
+                    } else {
+                        Message.SendErrorMessage(player, "Expected farm name.");
+                        Message.SendErrorMessage(player, "Usage: /farmzones detail [farm name].");
                     }
                     break;
                 case "help":
