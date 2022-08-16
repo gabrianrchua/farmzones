@@ -1,5 +1,6 @@
-package com.cgixe.farmzones.zones;
+package com.cgixe.farmzones.types;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -44,6 +45,7 @@ public class FzPlayer {
         return farms;
     }
 
+    @Nullable
     public FzFarm getFarm(String name) {
         for (FzFarm f : farms) {
             if (f.getName().equals(name)) {

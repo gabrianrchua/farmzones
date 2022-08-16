@@ -1,5 +1,6 @@
-package com.cgixe.farmzones.zones;
+package com.cgixe.farmzones.types;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,9 @@ public class FzManager {
                 return p;
             }
         }
-        return null;
+        // automatically add player to db if doesn't exist
+        FzPlayer newPlayer = new FzPlayer(name);
+        addPlayer(newPlayer);
+        return newPlayer;
     }
 }

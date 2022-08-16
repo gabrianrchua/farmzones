@@ -1,4 +1,4 @@
-package com.cgixe.farmzones.zones;
+package com.cgixe.farmzones.types;
 
 public enum CropType {
     WHEAT,

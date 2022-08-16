@@ -1,6 +1,10 @@
 package com.cgixe.farmzones.commands;
 
+import com.cgixe.farmzones.handlers.AddZoneHandler;
 import com.cgixe.farmzones.handlers.CreateFarmHandler;
+import com.cgixe.farmzones.types.CropType;
+import com.cgixe.farmzones.types.FzLocation;
+import com.cgixe.farmzones.types.FzZone;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.*;
@@ -26,7 +30,11 @@ public class FarmzonesCommands implements CommandExecutor {
             "&9/farmzones harvest [farm name]",
             "    &7Harvest a FarmZones farm",
             "&9/farmzones replant [farm name]",
-            "    &7Replant a FarmZones farm"
+            "    &7Replant a FarmZones farm",
+            "&9/farmzones list",
+            "    &7Lists all owned FarmZones farms",
+            "&9/farmzones detail [farm name]",
+            "    &7Lists details of a FarmZones farm"
     };
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -35,68 +43,106 @@ public class FarmzonesCommands implements CommandExecutor {
             for (String s : HELP_LINES) {
                 SendColoredMessage(sender, s);
             }
-            return true; // return immediately
-        }
-        // must have >1 arg
-        if (argLength == 1) {
-            Bukkit.dispatchCommand(sender, "farmzones");
-            SendErrorMessage(sender, "Missing arguments to command.");
-            return true;
+            return true; // return immediately upon help message
         }
         if (sender instanceof Player player) {
             switch (args[0].toLowerCase()) {
                 case "create":
-                    String createFarmName = args[1];
-                    CreateFarmHandler.createFarm(createFarmName, player.getName());
-                    SendColoredMessage(player, "&aFarm " + createFarmName + " created!");
+                    if (argLength == 2) {
+                        String createFarmName = args[1];
+                        if (CreateFarmHandler.createFarm(createFarmName, player.getName()) != null) {
+                            SendColoredMessage(player, "&aFarm " + createFarmName + " created!");
+                        } else {
+                            SendErrorMessage(player, "Farm " + createFarmName + " already exists.");
+                        }
+                    } else {
+                        SendErrorMessage(sender, "Expected farm name to create.");
+                        SendErrorMessage(sender, "Usage: /farmzones create [farm name]");
+                    }
                     break;
                 case "add":
                     if (argLength == 5) {
                         String farmName = args[1];
                         String zoneName = args[2];
                         boolean isPosOne = args[3].equals("pos1"); // else "pos2"
-                        String type = args[4];
-                        Location playerLocation = player.getLocation();
-                        // DEBUG \/ MSG
-                        player.sendMessage("Adding to zone " + zoneName + " in farm " + farmName + " type=" + type);
-                        player.sendMessage((isPosOne ? "position 1" : "position 2") + " at " + playerLocation.getX() + "," + playerLocation.getY() + "," + playerLocation.getZ());
+                        CropType type;
+                        try {
+                            type = CropType.valueOf(args[4].toUpperCase());
+                        } catch (Exception ex) {
+                            SendErrorMessage(player, "Crop type \"" + args[4] + "\" is invalid. Expected \"wheat\" \"carrot\" \"potato\" \"beetroot\" \"netherwart\"");
+                            SendErrorMessage(sender, "Usage: /farmzones add [farm name] [zone name] [pos1|pos2] [wheat|carrot|potato|beetroot|netherwart]");
+                            return true;
+                        }
+                        FzLocation playerLocation = new FzLocation(player.getLocation());
+
+                        FzZone newZone = AddZoneHandler.addZone(player.getName(), farmName, zoneName, type, isPosOne, playerLocation);
+                        if (newZone != null) {
+                            SendColoredMessage(player, "&aAdded position + " + (isPosOne ? '1' : '2') + " to zone " + zoneName + " in farm " + farmName + ".");
+                            if (newZone.isComplete()) {
+                                SendColoredMessage(player, "&aZone is now complete!");
+                            }
+                        } else {
+                            SendErrorMessage(player, "Farm " + farmName + " does not exist!");
+                        }
                     } else {
-                        Bukkit.dispatchCommand(sender, "farmzones");
                         SendErrorMessage(sender, "Expected farm name, zone name, position number, and crop type.");
                         SendErrorMessage(sender, "Usage: /farmzones add [farm name] [zone name] [pos1|pos2] [wheat|carrot|potato|beetroot|netherwart]");
                     }
                     break;
                 case "delete":
-                    boolean isDeletingFarm = args[1].equals("farm"); // else zone
-                    if (isDeletingFarm) {
-                        if (argLength == 3) {
-                            String deleteFarm = args[2];
-                            SendColoredMessage(player, "&aFarm " + deleteFarm + " deleted!");
+                    if (argLength > 1) {
+                        boolean isDeletingFarm = args[1].equals("farm"); // else zone
+                        if (isDeletingFarm) {
+                            if (argLength == 3) {
+                                String deleteFarm = args[2];
+                                SendColoredMessage(player, "&aFarm " + deleteFarm + " deleted!");
+                            } else {
+                                SendErrorMessage(sender, "Expected farm name to delete.");
+                                SendErrorMessage(sender, "Usage: /farmzones delete farm [farm name]");
+                            }
                         } else {
-                            Bukkit.dispatchCommand(sender, "farmzones");
-                            SendErrorMessage(sender, "Expected farm name to delete.");
-                            SendErrorMessage(sender, "Usage: /farmzones delete farm [farm name]");
+                            if (argLength == 4) {
+                                String deleteFromFarm = args[2];
+                                String deleteZone = args[3];
+                                SendColoredMessage(player, "&aZone " + deleteZone + " from farm " + deleteFromFarm + " deleted!");
+                            } else {
+                                SendErrorMessage(sender, "Expected farm name and zone name.");
+                                SendErrorMessage(sender, "Usage: /farmzones delete zone [farm name] [zone name]");
+                            }
                         }
                     } else {
-                        if (argLength == 4) {
-                            String deleteFromFarm = args[2];
-                            String deleteZone = args[3];
-                            SendColoredMessage(player, "&aZone " + deleteZone + " from farm " + deleteFromFarm + " deleted!");
-                        } else {
-                            Bukkit.dispatchCommand(sender, "farmzones");
-                            SendErrorMessage(sender, "Expected farm name and zone name.");
-                            SendErrorMessage(sender, "Usage: /farmzones delete zone [farm name] [zone name]");
-                        }
+                        SendErrorMessage(sender, "Expected \"delete farm\" or \"delete zone\".");
+                        SendErrorMessage(sender, "Usage: /farmzones delete [farm|zone] [farm name] [zone name]");
                     }
                     break;
                 case "harvest":
-                    String farmToHarvest = args[1];
-                    SendColoredMessage(player, "&aFarm " + farmToHarvest + " harvested!");
+                    if (argLength == 2) {
+                        String farmToHarvest = args[1];
+                        SendColoredMessage(player, "&aFarm " + farmToHarvest + " harvested!");
+                    } else {
+                        SendErrorMessage(sender, "Expected farm to harvest.");
+                        SendErrorMessage(sender, "Usage: /farmzones harvest [farm name]");
+                    }
                     break;
                 case "replant":
-                    String farmToReplant = args[1];
-                    SendColoredMessage(player, "&aFarm " + farmToReplant + " replanted!");
+                    if (argLength == 2) {
+                        String farmToReplant = args[1];
+                        SendColoredMessage(player, "&aFarm " + farmToReplant + " replanted!");
+                    } else {
+                        SendErrorMessage(sender, "Expected farm to replant.");
+                        SendErrorMessage(sender, "Usage: /farmzones replant [farm name]");
+                    }
                     break;
+                case "list":
+                    // TODO: make this print prettier
+                    SendColoredMessage(player, manager.getPlayer(player.getName()).getFarms().toString());
+                case "detail":
+                    if (argLength == 2) {
+                        // TODO: make this print prettier
+                        // TODO: add check for nonexistent farm
+                        String farmName = args[1];
+                        SendColoredMessage(player, manager.getPlayer(player.getName()).getFarm(farmName).toString());
+                    }
                 default:
                     Bukkit.dispatchCommand(sender, "farmzones");
                     SendErrorMessage(sender, "FarmZones: Unknown command.");
@@ -104,7 +150,7 @@ public class FarmzonesCommands implements CommandExecutor {
             }
         } else {
             // command requires player to run it
-            sender.sendMessage("This command must be run by a player.");
+            SendErrorMessage(sender, "This command must be run by a player.");
         }
         return true;
     }

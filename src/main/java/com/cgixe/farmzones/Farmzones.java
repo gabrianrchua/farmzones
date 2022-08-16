@@ -2,7 +2,7 @@ package com.cgixe.farmzones;
 
 import com.cgixe.farmzones.commands.FarmzonesCommands;
 import com.cgixe.farmzones.commands.FarmzonesTabcomplete;
-import com.cgixe.farmzones.zones.FzManager;
+import com.cgixe.farmzones.types.FzManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 

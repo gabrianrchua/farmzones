@@ -1,5 +1,6 @@
-package com.cgixe.farmzones.zones;
+package com.cgixe.farmzones.types;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,8 +18,9 @@ public class FzFarm {
         this.zones = zones;
     }
 
-    public void addZone(FzZone zone) {
+    public FzZone createZone(FzZone zone) {
         zones.add(zone);
+        return zone;
     }
 
     @Override
@@ -40,5 +42,14 @@ public class FzFarm {
 
     public List<FzZone> getZones() {
         return zones;
+    }
+    @Nullable
+    public FzZone getZone(String name) {
+        for (FzZone z : zones) {
+            if (z.getName().equals(name)) {
+                return z;
+            }
+        }
+        return null;
     }
 }
