@@ -1,4 +1,6 @@
 TODO
-[ ] tab autocomplete
-[ ] database
-[ ] implement all features
+[X] tab autocomplete
+[ ] database saving
+[ ] database reading
+[ ] database periodic writing
+[X] implement all features
