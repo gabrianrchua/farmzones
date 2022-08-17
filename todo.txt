@@ -1,6 +1,8 @@
-TODO
+to-do:
 [X] tab autocomplete
 [ ] database saving
 [ ] database reading
 [ ] database periodic writing
+    [ ] schedule task
+    [ ] config for how often to save
 [X] implement all features

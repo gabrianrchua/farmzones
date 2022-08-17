@@ -61,7 +61,12 @@ public class FarmzonesTabcomplete implements TabCompleter {
                 if (sender instanceof Player player) {
                     FzFarm farm = manager.getPlayer(player.getName()).getFarm(args[2]);
                     if (farm != null) {
-                        subCommands.addAll(farm.getZoneList());
+                        List<String> zones = farm.getZoneList();
+                        if (zones.size() == 0) {
+                            subCommands.add("[zone list]");
+                        } else {
+                            subCommands.addAll(farm.getZoneList());
+                        }
                         return subCommands;
                     }
                 }

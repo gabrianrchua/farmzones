@@ -1,14 +1,17 @@
 package com.cgixe.farmzones.types;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FzManager {
+public class FzManager implements Serializable {
     private final List<FzPlayer> players;
 
+    /***
+     * Creates a new empty FzManager. This should never be the case unless the farms.ser file doesn't exist yet.
+     */
     public FzManager() {
-        // initialize player list using db // for now, just init empty list
-        players = new ArrayList<>(0); // TODO: read db with player list
+        players = new ArrayList<>(0);
     }
 
     public FzPlayer addPlayer(FzPlayer player) {
