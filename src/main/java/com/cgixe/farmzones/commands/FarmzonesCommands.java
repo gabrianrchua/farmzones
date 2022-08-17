@@ -1,8 +1,6 @@
 package com.cgixe.farmzones.commands;
 
-import com.cgixe.farmzones.handlers.AddZoneHandler;
-import com.cgixe.farmzones.handlers.CreateFarmHandler;
-import com.cgixe.farmzones.handlers.DeleteHandler;
+import com.cgixe.farmzones.handlers.*;
 import com.cgixe.farmzones.types.CropType;
 import com.cgixe.farmzones.types.FzFarm;
 import com.cgixe.farmzones.types.FzLocation;
@@ -127,7 +125,11 @@ public class FarmzonesCommands implements CommandExecutor {
                 case "harvest":
                     if (argLength == 2) {
                         String farmToHarvest = args[1];
-                        Message.SendColoredMessage(player, "&aFarm " + farmToHarvest + " harvested!");
+                        if (HarvestFarmHandler.HarvestFarm(player, farmToHarvest)) {
+                            Message.SendColoredMessage(player, "&aFarm " + farmToHarvest + " harvested!");
+                        } else {
+                            Message.SendErrorMessage(sender, "Farm " + farmToHarvest + " doesn't exist!");
+                        }
                     } else {
                         Message.SendErrorMessage(sender, "Expected farm to harvest.");
                         Message.SendErrorMessage(sender, "Usage: /farmzones harvest [farm name]");
@@ -136,7 +138,14 @@ public class FarmzonesCommands implements CommandExecutor {
                 case "replant":
                     if (argLength == 2) {
                         String farmToReplant = args[1];
-                        Message.SendColoredMessage(player, "&aFarm " + farmToReplant + " replanted!");
+                        int replantResult = ReplantFarmHandler.ReplantFarm(player, farmToReplant);
+                        if (replantResult == 0) {
+                            Message.SendColoredMessage(player, "&aFarm " + farmToReplant + " replanted!");
+                        } else if (replantResult == -999) {
+                            Message.SendErrorMessage(sender, "Farm " + farmToReplant + " does not exist!");
+                        } else {
+                            Message.SendColoredMessage(player, "&6Farm " + farmToReplant + " partially replanted. " + replantResult + " crops couldn't be replanted (wrong soil type underneath, missing seeds in inventory, crop space wasn't empty).");
+                        }
                     } else {
                         Message.SendErrorMessage(sender, "Expected farm to replant.");
                         Message.SendErrorMessage(sender, "Usage: /farmzones replant [farm name]");

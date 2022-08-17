@@ -15,9 +15,9 @@ public class FzLocation {
         this.z = z;
     }
     public FzLocation(Location location) {
-        x = (int) Math.round(location.getX());
+        x = (int) Math.floor(location.getX());
         y = (int) Math.round(location.getY());
-        z = (int) Math.round(location.getZ());
+        z = (int) Math.floor(location.getZ());
     }
     @Override
     public boolean equals(Object o) {
