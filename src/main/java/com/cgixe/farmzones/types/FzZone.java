@@ -2,12 +2,13 @@ package com.cgixe.farmzones.types;
 
 import com.cgixe.farmzones.utils.Message;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /***
  * Defines a FarmZones zone.
  */
-public class FzZone {
+public class FzZone implements Serializable {
     private final CropType cropType;
     private final String name;
     private FzLocation pos1, pos2;

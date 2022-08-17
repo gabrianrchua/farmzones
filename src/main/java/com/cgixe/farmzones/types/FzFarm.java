@@ -3,11 +3,12 @@ package com.cgixe.farmzones.types;
 import com.cgixe.farmzones.utils.Message;
 
 import javax.annotation.Nullable;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class FzFarm {
+public class FzFarm implements Serializable {
     private final String name;
     private final List<FzZone> zones;
 

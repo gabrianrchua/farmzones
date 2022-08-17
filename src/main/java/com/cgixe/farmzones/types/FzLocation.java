@@ -2,12 +2,13 @@ package com.cgixe.farmzones.types;
 
 import org.bukkit.Location;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /***
  * Stores a coordinate in xyz space (integers only).
  */
-public class FzLocation {
+public class FzLocation implements Serializable {
     private final int x, y, z;
     public FzLocation(int x, int y, int z) {
         this.x = x;
