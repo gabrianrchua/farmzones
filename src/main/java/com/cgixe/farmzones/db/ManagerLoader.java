@@ -3,10 +3,7 @@ package com.cgixe.farmzones.db;
 import com.cgixe.farmzones.types.FzManager;
 import org.bukkit.Bukkit;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 
 /***
  * Responsible for loading FzManager class from disk if it exists. Otherwise, returns a new instance of FzManager
@@ -23,7 +20,7 @@ public class ManagerLoader {
             }
         }
 
-        FzManager loadedManager = null;
+        FzManager loadedManager;
         try {
             FileInputStream fileIn = new FileInputStream("plugins/FarmZones/farms.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -31,10 +28,14 @@ public class ManagerLoader {
             in.close();
             fileIn.close();
         } catch (IOException i) {
-            Bukkit.getLogger().warning("[FarmZones] IOException while trying to load farms.ser: " + i);
+            // Suppress file not found message
+            if (!(i instanceof FileNotFoundException)) {
+                Bukkit.getLogger().warning("[FarmZones] IOException while trying to load farms.ser: " + i);
+            }
             return new FzManager();
         } catch (ClassNotFoundException c) {
             Bukkit.getLogger().warning("[FarmZones] FzManager class wasn't found when reading farms.ser: " + c);
+            Bukkit.getLogger().warning("[FarmZones] This usually means the file was corrupted. Creating a new one.");
             return new FzManager();
         }
 

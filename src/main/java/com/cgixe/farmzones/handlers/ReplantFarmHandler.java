@@ -52,6 +52,9 @@ public class ReplantFarmHandler {
 
             FzLocation pos1 = zone.getPos1();
             FzLocation pos2 = zone.getPos2();
+            if (pos1 == null || pos2 == null) {
+                break; // skip, zone isn't complete
+            }
             int startX, endX, startY, endY, startZ, endZ;
             // x coordinate
             if (pos1.getX() <= pos2.getX()) {

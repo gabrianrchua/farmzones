@@ -1,6 +1,6 @@
 name: FarmZones
 main: com.cgixe.farmzones.Farmzones
-version: 1.0
+version: 1.0.1
 author: cgixe
 
 description: Create zones in your farms for auto replanting

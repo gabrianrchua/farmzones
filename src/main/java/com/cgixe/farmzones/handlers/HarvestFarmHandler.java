@@ -39,6 +39,10 @@ public class HarvestFarmHandler {
         for (FzZone zone : farm.getZones()) {
             FzLocation pos1 = zone.getPos1();
             FzLocation pos2 = zone.getPos2();
+            if (pos1 == null || pos2 == null) {
+                // skip the zone, it is not complete
+                break;
+            }
             int startX, endX, startY, endY, startZ, endZ;
             // x coordinate
             if (pos1.getX() <= pos2.getX()) {
@@ -64,16 +68,11 @@ public class HarvestFarmHandler {
                 startZ = pos2.getZ();
                 endZ = pos1.getZ();
             }
-            /*Bukkit.getLogger().info("zone: " + zone);
-            Bukkit.getLogger().info("x: " + startX + " to " + endX);
-            Bukkit.getLogger().info("y: " + startY + " to " + endY);
-            Bukkit.getLogger().info("z: " + startZ + " to " + endZ);*/
             for (int y = startY; y <= endY; y++) {
                 for (int x = startX; x <= endX; x++) {
                     for (int z = startZ; z <= endZ; z++) {
                         Block block = world.getBlockAt(x, y, z);
                         Material blockMaterial = block.getType();
-                        //Bukkit.getLogger().info("block " + x + "," + y + "," + z + ", mat=" + blockMaterial);
                         for (Material valid : validCrops) {
                             if (valid == blockMaterial) {
                                 Collection<ItemStack> drops = block.getDrops();

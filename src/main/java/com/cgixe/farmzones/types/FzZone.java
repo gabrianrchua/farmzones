@@ -2,6 +2,7 @@ package com.cgixe.farmzones.types;
 
 import com.cgixe.farmzones.utils.Message;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -11,6 +12,7 @@ import java.util.Objects;
 public class FzZone implements Serializable {
     private final CropType cropType;
     private final String name;
+    @Nullable
     private FzLocation pos1, pos2;
 
     public FzZone(CropType cropType, String name) {
@@ -46,7 +48,9 @@ public class FzZone implements Serializable {
 
     @Override
     public String toString() {
-        return Message.ColorizeMessage("  &9Zone \"" + name + "\"\n    &7" + cropType.toString().toLowerCase() + "\n    &7" + pos1.toString() + " to " + pos2.toString());
+        String pos1str = pos1 == null ? "&c[Not assigned]" : "&7" + pos1;
+        String pos2str = pos2 == null ? "&c[Not assigned]" : "&7" + pos2;
+        return Message.ColorizeMessage("  &9Zone \"" + name + "\"\n    &7" + cropType.toString().toLowerCase() + "\n    " + pos1str + " to " + pos2str);
     }
 
     // getters
@@ -54,10 +58,12 @@ public class FzZone implements Serializable {
         return cropType;
     }
 
+    @Nullable
     public FzLocation getPos1() {
         return pos1;
     }
 
+    @Nullable
     public FzLocation getPos2() {
         return pos2;
     }

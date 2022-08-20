@@ -1,14 +1,17 @@
 to-do:
 [X] tab autocomplete
-[ ] database saving
-[ ] database reading
+[X] database saving
+[X] database reading
 [ ] database periodic writing
     [ ] schedule task
-    [ ] config for how often to save
-[ ] suppress message for could not find farmzones file if filenotfound
+[X] suppress message for could not find farmzones file if filenotfound
 [ ] add harvest-all command
 [ ] add replant-all command
 [ ] add harvest-replant (?) command
-[ ] fix bug when detailing thing when null zone (add "unassigned" message and red/orange)
-[ ] add check for isComplete() before harvesting or replanting zones
+[ ] add harvest-replant-all command
+[ ] add config
+    [ ] max zone size
+    [ ] how often to save
+[X] fix bug when detailing thing when null zone (add "unassigned" message and red/orange)
+[X] add check for isComplete() before harvesting or replanting zones
 [X] implement all features
