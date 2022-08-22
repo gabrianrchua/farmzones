@@ -1,6 +1,10 @@
 # FarmZones
 
-A Spigot plugin to automatically harvest and replant crops in user-defined zones.
+A standalone Spigot plugin to automatically harvest and replant crops in user-defined zones.
+
+## Dependencies
+
+No external dependencies! Just a Bukkit or compatible (Paper, Spigot) server.
 
 ## Command guide
 - `/farmzones`
