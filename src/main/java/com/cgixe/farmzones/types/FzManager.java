@@ -1,5 +1,9 @@
 package com.cgixe.farmzones.types;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,5 +37,11 @@ public class FzManager implements Serializable {
         FzPlayer newPlayer = new FzPlayer(name);
         addPlayer(newPlayer);
         return newPlayer;
+    }
+
+    public String toJson() {
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        return gson.toJson(this);
     }
 }

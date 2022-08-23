@@ -11,7 +11,7 @@ to-do:
 [ ] add harvest-replant-all command
 [ ] add bonemeal command
 [ ] add reload-config command
-[ ] !!! properly save manager to disk (incompatibility between versions!!)
+[X] !!! properly save manager to disk (incompatibility between versions!!)
 [X] add config
     [X] max zone size
     [X] max num zones

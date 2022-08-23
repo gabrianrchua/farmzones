@@ -11,9 +11,6 @@ public class AddZoneHandler {
         if (farm == null) {
             return AddZoneResult.ERROR_FARM_NOT_EXIST;
         }
-        if (farm.getZones().size() >= config.getInt("max-num-zones")) {
-            return AddZoneResult.ERROR_MAX_NUM_ZONES;
-        }
         FzZone zone = farm.getZone(zoneName);
         if (zone != null) {
             // add to existing zone
@@ -21,6 +18,10 @@ public class AddZoneHandler {
                 return AddZoneResult.SUCCESS;
             }
         } else {
+            // make sure the user is allowed to create new zone
+            if (farm.getZones().size() >= config.getInt("max-num-zones")) {
+                return AddZoneResult.ERROR_MAX_NUM_ZONES;
+            }
             // create new zone
             FzZone newZone = farm.createZone(new FzZone(type, zoneName));
             if (newZone.addZonePos(location, isPos1)) {

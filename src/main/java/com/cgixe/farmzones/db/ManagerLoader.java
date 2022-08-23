@@ -1,6 +1,7 @@
 package com.cgixe.farmzones.db;
 
 import com.cgixe.farmzones.types.FzManager;
+import com.google.gson.Gson;
 import org.bukkit.Bukkit;
 
 import java.io.*;
@@ -22,6 +23,21 @@ public class ManagerLoader {
 
         FzManager loadedManager;
         try {
+            FileInputStream fileIn = new FileInputStream("plugins/FarmZones/farms.json");
+            String jsonStr = new String(fileIn.readAllBytes());
+            Gson json = new Gson();
+            loadedManager = json.fromJson(jsonStr, FzManager.class);
+            fileIn.close();
+            return loadedManager;
+        } catch (IOException e) {
+            // suppress file not found; just create a new one
+            if (!(e instanceof FileNotFoundException)) {
+                Bukkit.getLogger().warning("[FarmZones] IOException while trying to load farms.json: " + e);
+            }
+            return new FzManager();
+        }
+        /*
+        try {
             FileInputStream fileIn = new FileInputStream("plugins/FarmZones/farms.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             loadedManager = (FzManager) in.readObject();
@@ -39,6 +55,6 @@ public class ManagerLoader {
             return new FzManager();
         }
 
-        return loadedManager;
+        return loadedManager;*/
     }
 }
