@@ -36,25 +36,5 @@ public class ManagerLoader {
             }
             return new FzManager();
         }
-        /*
-        try {
-            FileInputStream fileIn = new FileInputStream("plugins/FarmZones/farms.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            loadedManager = (FzManager) in.readObject();
-            in.close();
-            fileIn.close();
-        } catch (IOException i) {
-            // Suppress file not found message
-            if (!(i instanceof FileNotFoundException)) {
-                Bukkit.getLogger().warning("[FarmZones] IOException while trying to load farms.ser: " + i);
-            }
-            return new FzManager();
-        } catch (ClassNotFoundException c) {
-            Bukkit.getLogger().warning("[FarmZones] FzManager class wasn't found when reading farms.ser: " + c);
-            Bukkit.getLogger().warning("[FarmZones] This usually means the file was corrupted. Creating a new one.");
-            return new FzManager();
-        }
-
-        return loadedManager;*/
     }
 }

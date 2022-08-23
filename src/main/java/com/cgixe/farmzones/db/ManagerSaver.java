@@ -39,17 +39,5 @@ public class ManagerSaver {
             Bukkit.getLogger().warning("[FarmZones] IOException while trying to save farms.json file: " + e);
             return false;
         }
-        /*try {
-            FileOutputStream fileOut = new FileOutputStream("plugins/FarmZones/farms.ser");
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(manager);
-            out.close();
-            fileOut.close();
-            Bukkit.getLogger().info("[FarmZones] Successfully saved farms to disk.");
-            return true;
-        } catch (IOException i) {
-            Bukkit.getLogger().warning("[FarmZones] IOException while trying to save farms to disk: " + i);
-        }
-        return false;*/
     }
 }
