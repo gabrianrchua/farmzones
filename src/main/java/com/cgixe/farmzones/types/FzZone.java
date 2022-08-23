@@ -1,5 +1,6 @@
 package com.cgixe.farmzones.types;
 
+import com.cgixe.farmzones.Farmzones;
 import com.cgixe.farmzones.utils.Message;
 
 import javax.annotation.Nullable;
@@ -25,12 +26,32 @@ public class FzZone implements Serializable {
         return pos1 != null && pos2 != null;
     }
 
-    public void addZonePos(FzLocation location, boolean isPos1) {
+    /**
+     * Adds either zone 1 or 2 to an existing zone
+     * @param location The location to add
+     * @param isPos1 True if setting the first position, otherwise false for second position
+     * @return Returns true if zone was created, otherwise false if the zone is too large as defined by config.yml
+     */
+    public boolean addZonePos(FzLocation location, boolean isPos1) {
         if (isPos1) {
             pos1 = location;
         } else {
             pos2 = location;
         }
+
+        // validate size if now complete
+        if (pos1 != null && pos2 != null) {
+            if (FzLocation.numBlocks(pos1, pos2) > Farmzones.config.getInt("max-zone-size")) {
+                // unset invalid location
+                if (isPos1) {
+                    pos1 = null;
+                } else {
+                    pos2 = null;
+                }
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

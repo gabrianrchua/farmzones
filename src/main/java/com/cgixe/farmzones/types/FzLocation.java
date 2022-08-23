@@ -20,6 +20,19 @@ public class FzLocation implements Serializable {
         y = (int) Math.round(location.getY());
         z = (int) Math.floor(location.getZ());
     }
+
+    /**
+     * Calculates the volume (blocks) between two locations (a region)
+     * @param location1 The first location (corner of region)
+     * @param location2 The second location (opposite corner of region)
+     * @return Returns the number of blocks contained within the region
+     */
+    public static int numBlocks(FzLocation location1, FzLocation location2) {
+        int diffX = Math.abs(location1.x - location2.x) + 1;
+        int diffY = Math.abs(location1.y - location2.y) + 1;
+        int diffZ = Math.abs(location1.z - location2.z) + 1;
+        return diffX * diffY * diffZ;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

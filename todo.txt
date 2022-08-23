@@ -2,16 +2,20 @@ to-do:
 [X] tab autocomplete
 [X] database saving
 [X] database reading
-[ ] database periodic writing
-    [ ] schedule task
+[X] database periodic writing
+    [X] schedule task
 [X] suppress message for could not find farmzones file if filenotfound
 [ ] add harvest-all command
 [ ] add replant-all command
 [ ] add harvest-replant (?) command
 [ ] add harvest-replant-all command
-[ ] add config
-    [ ] max zone size
-    [ ] how often to save
+[ ] add bonemeal command
+[ ] add reload-config command
+[ ] !!! properly save manager to disk (incompatibility between versions!!)
+[X] add config
+    [X] max zone size
+    [X] max num zones
+    [X] how often to save
 [X] fix bug when detailing thing when null zone (add "unassigned" message and red/orange)
 [X] add check for isComplete() before harvesting or replanting zones
 [X] implement all features

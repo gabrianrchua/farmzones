@@ -10,6 +10,7 @@ import org.bukkit.command.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import static com.cgixe.farmzones.Farmzones.config;
 import static com.cgixe.farmzones.Farmzones.manager;
 
 public class FarmzonesCommands implements CommandExecutor {
@@ -45,14 +46,15 @@ public class FarmzonesCommands implements CommandExecutor {
             return true; // return immediately upon help message
         }
         if (sender instanceof Player player) {
+            String playerName = player.getName();
             switch (args[0].toLowerCase()) {
                 case "create":
                     if (argLength == 2) {
                         String createFarmName = args[1];
-                        if (CreateFarmHandler.createFarm(createFarmName, player.getName()) != null) {
-                            Message.SendColoredMessage(player, "&aFarm " + createFarmName + " created!");
-                        } else {
-                            Message.SendErrorMessage(player, "Farm " + createFarmName + " already exists.");
+                        switch (CreateFarmHandler.createFarm(createFarmName, playerName)) {
+                            case SUCCESS -> Message.SendColoredMessage(player, "&aFarm " + createFarmName + " created!");
+                            case ERROR_FARM_EXISTS -> Message.SendErrorMessage(player, "Farm " + createFarmName + " already exists.");
+                            case ERROR_MAX_FARMS -> Message.SendErrorMessage(player, "You have created the maximum number of farms (" + config.getInt("max-num-farms") + ") allowed on this server!");
                         }
                     } else {
                         Message.SendErrorMessage(sender, "Expected farm name to create.");
@@ -73,15 +75,23 @@ public class FarmzonesCommands implements CommandExecutor {
                             return true;
                         }
                         FzLocation playerLocation = new FzLocation(player.getLocation());
-
-                        FzZone newZone = AddZoneHandler.addZone(player.getName(), farmName, zoneName, type, isPosOne, playerLocation);
-                        if (newZone != null) {
-                            Message.SendColoredMessage(player, "&aAdded position " + (isPosOne ? '1' : '2') + " to zone " + zoneName + " in farm " + farmName + ".");
-                            if (newZone.isComplete()) {
-                                Message.SendColoredMessage(player, "&aZone is now complete!");
+                        switch (AddZoneHandler.addZone(playerName, farmName, zoneName, type, isPosOne, playerLocation)) {
+                            case SUCCESS -> {
+                                Message.SendColoredMessage(player, "&aAdded position " + (isPosOne ? '1' : '2') + " to zone " + zoneName + " in farm " + farmName + ".");
+                                FzFarm farm = manager.getPlayer(playerName).getFarm(farmName);
+                                if (farm != null) {
+                                    FzZone zone = farm.getZone(zoneName);
+                                    if (zone != null && zone.isComplete()) {
+                                        Message.SendColoredMessage(player, "&aZone is now complete!");
+                                    }
+                                }
                             }
-                        } else {
-                            Message.SendErrorMessage(player, "Farm " + farmName + " does not exist!");
+                            case ERROR_MAX_NUM_ZONES ->
+                                    Message.SendErrorMessage(player, "You have added the maximum number of zones (" + config.getInt("max-num-zones") + ") allowed on this server! Create a new farm to continue adding zones.");
+                            case ERROR_FARM_NOT_EXIST ->
+                                    Message.SendErrorMessage(player, "Farm " + farmName + " does not exist!");
+                            case ERROR_MAX_ZONE_SIZE ->
+                                    Message.SendErrorMessage(player, "This zone exceeds the maximum size (" + config.getInt("max-zone-size") + ") allowed by this server! Create a smaller zone instead.");
                         }
                     } else {
                         Message.SendErrorMessage(sender, "Expected farm name, zone name, position number, and crop type.");
@@ -94,7 +104,7 @@ public class FarmzonesCommands implements CommandExecutor {
                         if (isDeletingFarm) {
                             if (argLength == 3) {
                                 String deleteFarm = args[2];
-                                if (DeleteHandler.DeleteFarm(player.getName(), deleteFarm)) {
+                                if (DeleteHandler.DeleteFarm(playerName, deleteFarm)) {
                                     Message.SendColoredMessage(player, "&aFarm " + deleteFarm + " deleted!");
                                 } else {
                                     Message.SendErrorMessage(player, "Farm " + deleteFarm + " does not exist!");
@@ -107,7 +117,7 @@ public class FarmzonesCommands implements CommandExecutor {
                             if (argLength == 4) {
                                 String deleteFromFarm = args[2];
                                 String deleteZone = args[3];
-                                if (DeleteHandler.DeleteZone(player.getName(), deleteFromFarm, deleteZone)) {
+                                if (DeleteHandler.DeleteZone(playerName, deleteFromFarm, deleteZone)) {
                                     Message.SendColoredMessage(player, "&aZone " + deleteZone + " from farm " + deleteFromFarm + " deleted!");
                                 } else {
                                     Message.SendErrorMessage(player, "Either farm " + deleteFromFarm + " or zone " + deleteZone + " does not exist!");
@@ -153,12 +163,12 @@ public class FarmzonesCommands implements CommandExecutor {
                     break;
                 case "list":
                     Message.SendColoredMessage(player, "&dYour FarmZones farms:");
-                    Message.SendColoredMessage(player, manager.getPlayer(player.getName()).getFarmListString());
+                    Message.SendColoredMessage(player, manager.getPlayer(playerName).getFarmListString());
                     break;
                 case "detail":
                     if (argLength == 2) {
                         String farmName = args[1];
-                        FzFarm farm = manager.getPlayer(player.getName()).getFarm(farmName);
+                        FzFarm farm = manager.getPlayer(playerName).getFarm(farmName);
                         if (farm != null) {
                             Message.SendColoredMessage(player, farm.toString());
                         } else {

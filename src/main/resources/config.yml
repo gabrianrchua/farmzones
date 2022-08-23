@@ -1,0 +1,17 @@
+# Config File for FarmZones
+
+# The maximum number of zones a farm can have
+# default: 30
+max-num-zones: 30
+
+# The maximum number of blocks a zone can contain
+# default: 500
+max-zone-size: 500
+
+# The maximum number of farms a player can own
+# default: 50
+max-num-farms: 50
+
+# How often to autosave farms to disk (seconds).
+# default: 43200 (12 hours)
+farm-autosave-interval: 43200
