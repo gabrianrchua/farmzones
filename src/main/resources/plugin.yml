@@ -1,6 +1,6 @@
 name: FarmZones
 main: com.cgixe.farmzones.Farmzones
-version: 1.1.0
+version: 1.2.0
 author: cgixe
 
 description: Create zones in your farms for auto replanting
@@ -35,3 +35,21 @@ commands:
   farmzones detail:
     description: Lists details of a FarmZones farm
     usage: /farmzones detail [farm name]
+  farmzones harvest-all:
+    description: Harvests all owned FarmZones farms
+    usage: /farmzones harvest-all
+  farmzones replant-all:
+    description: Replants all owned FarmZones farms
+    usage: /farmzones replant-all
+  farmzones harvest-replant:
+    description: Harvests and then replants a FarmZones farm
+    usage: /farmzones harvest-replant [farm name]
+  farmzones harvest-replant-all:
+    description: Harvests and then replants all owned FarmZones farms
+    usage: /farmzones harvest-replant-all
+  farmzones bonemeal:
+    description: Applies bonemeal to all crops in a FarmZones farm
+    usage: /farmzones bonemeal [farm name]
+  farmzones bonemeal-all:
+    description: Applies bonemeal to all crops in all FarmZones farms
+    usage: /farmzoens bonemeal-all

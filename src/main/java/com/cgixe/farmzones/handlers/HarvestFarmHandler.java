@@ -3,7 +3,6 @@ package com.cgixe.farmzones.handlers;
 import com.cgixe.farmzones.types.FzFarm;
 import com.cgixe.farmzones.types.FzLocation;
 import com.cgixe.farmzones.types.FzZone;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -13,6 +12,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.cgixe.farmzones.Farmzones.manager;
 
@@ -24,11 +24,11 @@ public class HarvestFarmHandler {
             Material.BEETROOTS,
             Material.NETHER_WART
     };
-    /***
+    /**
      * Harvests all mature crops in a player's farm
      * @param player The player who owns the farm
      * @param farmName The name of the farm to harvest
-     * @return Returns true if the operation was successful.
+     * @return Returns true if the operation was successful (the farm exists).
      */
     public static boolean HarvestFarm(Player player, String farmName) {
         FzFarm farm = manager.getPlayer(player.getName()).getFarm(farmName);
@@ -36,6 +36,27 @@ public class HarvestFarmHandler {
 
         World world = player.getWorld();
         PlayerInventory inventory = player.getInventory();
+        harvestFarm(farm, world, inventory, player);
+        return true;
+    }
+
+    /**
+     * Harvests all a player's farms
+     * @param player The player to harvest from
+     * @return Returns the number of farms that were harvested successfully
+     */
+    public static int HarvestAllFarms(Player player) {
+        World world = player.getWorld();
+        PlayerInventory inventory = player.getInventory();
+
+        List<FzFarm> farms = manager.getPlayer(player.getName()).getFarms();
+        for (FzFarm farm : farms) {
+            harvestFarm(farm, world, inventory, player);
+        }
+        return farms.size();
+    }
+
+    private static void harvestFarm(FzFarm farm, World world, PlayerInventory inventory, Player player) {
         for (FzZone zone : farm.getZones()) {
             FzLocation pos1 = zone.getPos1();
             FzLocation pos2 = zone.getPos2();
@@ -91,6 +112,5 @@ public class HarvestFarmHandler {
                 }
             }
         }
-        return true;
     }
 }

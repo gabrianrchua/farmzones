@@ -29,12 +29,24 @@ public class FarmzonesCommands implements CommandExecutor {
             "    &7Delete FarmZones zone from a farm",
             "&9/farmzones harvest [farm name]",
             "    &7Harvest a FarmZones farm",
+            "&9/farmzones harvest-all",
+            "    &7Harvest all owned FarmZones farms",
             "&9/farmzones replant [farm name]",
             "    &7Replant a FarmZones farm",
+            "&9/farmzones replant-all",
+            "    &7Replant all owned FarmZones farms",
+            "&9/farmzones harvest-replant [farm name]",
+            "    &7Harvests and then replants a FarmZones farm",
+            "&9/farmzones harvest-replant-all",
+            "    &7Harvests and then replants all owned FarmZones farms",
+            "&9/farmzones bonemeal [farm name]",
+            "    &7Applies bonemeal to all crops in a FarmZones farm",
+            "&9/farmzones bonemeal-all",
+            "    &7Applies bonemeal to all crops in all FarmZones farms",
             "&9/farmzones list",
-            "    &7Lists all owned FarmZones farms",
+            "    &7List all owned FarmZones farms",
             "&9/farmzones detail [farm name]",
-            "    &7Lists details of a FarmZones farm"
+            "    &7List details of a FarmZones farm"
     };
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -52,9 +64,12 @@ public class FarmzonesCommands implements CommandExecutor {
                     if (argLength == 2) {
                         String createFarmName = args[1];
                         switch (CreateFarmHandler.createFarm(createFarmName, playerName)) {
-                            case SUCCESS -> Message.SendColoredMessage(player, "&aFarm " + createFarmName + " created!");
-                            case ERROR_FARM_EXISTS -> Message.SendErrorMessage(player, "Farm " + createFarmName + " already exists.");
-                            case ERROR_MAX_FARMS -> Message.SendErrorMessage(player, "You have created the maximum number of farms (" + config.getInt("max-num-farms") + ") allowed on this server!");
+                            case SUCCESS ->
+                                    Message.SendColoredMessage(player, "&aFarm " + createFarmName + " created!");
+                            case ERROR_FARM_EXISTS ->
+                                    Message.SendErrorMessage(player, "Farm " + createFarmName + " already exists.");
+                            case ERROR_MAX_FARMS ->
+                                    Message.SendErrorMessage(player, "You have created the maximum number of farms (" + config.getInt("max-num-farms") + ") allowed on this server!");
                         }
                     } else {
                         Message.SendErrorMessage(sender, "Expected farm name to create.");
@@ -176,11 +191,65 @@ public class FarmzonesCommands implements CommandExecutor {
                         }
                     } else {
                         Message.SendErrorMessage(player, "Expected farm name.");
-                        Message.SendErrorMessage(player, "Usage: /farmzones detail [farm name].");
+                        Message.SendErrorMessage(player, "Usage: /farmzones detail [farm name]");
                     }
                     break;
                 case "help":
                     Bukkit.dispatchCommand(sender, "farmzones");
+                    break;
+                case "harvest-all":
+                    int farmsHarvested = HarvestFarmHandler.HarvestAllFarms(player);
+                    if (farmsHarvested == 0) {
+                        Message.SendColoredMessage(player, "&6You did not have any farms to harvest.");
+                    } else {
+                        Message.SendColoredMessage(player, "&a" + farmsHarvested + " farms were successfully harvested!");
+                    }
+                    break;
+                case "replant-all":
+                    int failed = ReplantFarmHandler.ReplantAllFarms(player);
+                    if (failed == 0) {
+                        Message.SendColoredMessage(player, "&aAll farms replanted!");
+                    } else {
+                        Message.SendColoredMessage(player, "&6Farms partially replanted. " + failed + " crops couldn't be replanted (wrong soil type underneath, missing seeds in inventory, crop space wasn't empty).");
+                    }
+                    break;
+                case "harvest-replant":
+                    if (argLength == 2) {
+                        String farm = args[1];
+                        Bukkit.dispatchCommand(player, "farmzones harvest " + farm);
+                        Bukkit.dispatchCommand(player, "farmzones replant " + farm);
+                    } else {
+                        Message.SendErrorMessage(player, "Expected farm name.");
+                        Message.SendErrorMessage(player, "Usage: /farmzones harvest-replant [farm name]");
+                    }
+                    break;
+                case "harvest-replant-all":
+                    Bukkit.dispatchCommand(player, "farmzones harvest-all");
+                    Bukkit.dispatchCommand(player, "farmzones replant-all");
+                    break;
+                case "bonemeal":
+                    if (argLength == 2) {
+                        String farm = args[1];
+                        int failedBonemeal = BonemealFarmHandler.BonemealFarm(player, farm);
+                        if (failedBonemeal == 0) {
+                            Message.SendColoredMessage(player, "&aFarm " + farm + " bonemealed!");
+                        } else if (failedBonemeal == -999) {
+                            Message.SendErrorMessage(player, "Farm " + farm + " doesn't exist!");
+                        } else {
+                            Message.SendColoredMessage(player, "&6Farm " + farm + " partially bonemealed. " + failedBonemeal + " crops couldn't be bonemealed (not enough bonemeal in inventory).");
+                        }
+                    } else {
+                        Message.SendErrorMessage(player, "Expected farm name.");
+                        Message.SendErrorMessage(player, "Usage: /farmzones bonemeal [farm name]");
+                    }
+                    break;
+                case "bonemeal-all":
+                    int failedBonemeal = BonemealFarmHandler.BonemealAllFarms(player);
+                    if (failedBonemeal == 0) {
+                        Message.SendColoredMessage(player, "&aAll farms bonemealed!");
+                    } else {
+                        Message.SendColoredMessage(player, "&6Farms partially bonemealed. " + failedBonemeal + " crops couldn't be bonemealed (not enough bonemeal in inventory).");
+                    }
                     break;
                 default:
                     Bukkit.dispatchCommand(sender, "farmzones");

@@ -5,8 +5,10 @@ import com.cgixe.farmzones.commands.FarmzonesTabcomplete;
 import com.cgixe.farmzones.db.ManagerLoader;
 import com.cgixe.farmzones.db.ManagerSaver;
 import com.cgixe.farmzones.db.ManagerSaverRunnable;
+import com.cgixe.farmzones.types.CropType;
 import com.cgixe.farmzones.types.FzManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.EnumMap;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -23,12 +26,17 @@ public class Farmzones extends JavaPlugin {
     public static FzManager manager;
     public static FileConfiguration config;
 
+    public static EnumMap<CropType, Material> cropMapping = new EnumMap<>(CropType.class);
+    public static EnumMap<CropType, Material> seedMapping = new EnumMap<>(CropType.class);
+
+
     @Override
     public void onEnable() {
         super.onEnable();
 
-        // initialize fzmanager
+        // initialize fzmanager and material mappings
         manager = ManagerLoader.LoadManager();
+        initializeMappings();
 
         // register commands
         this.getCommand("farmzones").setExecutor(new FarmzonesCommands());
@@ -74,5 +82,19 @@ public class Farmzones extends JavaPlugin {
                 return;
             }
         }
+    }
+
+    private void initializeMappings() {
+        cropMapping.put(CropType.WHEAT, Material.WHEAT);
+        cropMapping.put(CropType.CARROT, Material.CARROTS);
+        cropMapping.put(CropType.POTATO, Material.POTATOES);
+        cropMapping.put(CropType.BEETROOT, Material.BEETROOTS);
+        cropMapping.put(CropType.NETHERWART, Material.NETHER_WART);
+
+        seedMapping.put(CropType.WHEAT, Material.WHEAT_SEEDS);
+        seedMapping.put(CropType.CARROT, Material.CARROT);
+        seedMapping.put(CropType.POTATO, Material.POTATO);
+        seedMapping.put(CropType.BEETROOT, Material.BEETROOT_SEEDS);
+        seedMapping.put(CropType.NETHERWART, Material.NETHER_WART);
     }
 }

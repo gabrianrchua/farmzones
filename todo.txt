@@ -5,12 +5,13 @@ to-do:
 [X] database periodic writing
     [X] schedule task
 [X] suppress message for could not find farmzones file if filenotfound
-[ ] add harvest-all command
-[ ] add replant-all command
-[ ] add harvest-replant (?) command
-[ ] add harvest-replant-all command
-[ ] add bonemeal command
-[ ] add reload-config command
+[X] add harvest-all command
+[X] add replant-all command
+[X] add harvest-replant (?) command
+[X] add harvest-replant-all command
+[X] add bonemeal command
+[N] add reload-config command
+    [N] perms: default op only
 [X] !!! properly save manager to disk (incompatibility between versions!!)
 [X] add config
     [X] max zone size

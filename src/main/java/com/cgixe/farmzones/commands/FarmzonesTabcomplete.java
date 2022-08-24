@@ -17,7 +17,7 @@ public class FarmzonesTabcomplete implements TabCompleter {
         int argLength = args.length;
         List<String> subCommands = new ArrayList<>();
         if (argLength == 1) {
-            subCommands.addAll(List.of("create", "add", "delete", "harvest", "replant", "list", "detail"));
+            subCommands.addAll(List.of("create", "add", "delete", "harvest", "replant", "harvest-all", "replant-all", "harvest-replant", "harvest-replant-all", "bonemeal", "bonemeal-all", "list", "detail"));
             return subCommands;
         } else if (argLength == 2) {
             switch (args[0]) {
@@ -31,6 +31,8 @@ public class FarmzonesTabcomplete implements TabCompleter {
                 case "harvest":
                 case "replant":
                 case "detail":
+                case "harvest-replant":
+                case "bonemeal":
                     // add player's farms
                     if (sender instanceof Player player) {
                         subCommands.addAll(manager.getPlayer(player.getName()).getFarmList());

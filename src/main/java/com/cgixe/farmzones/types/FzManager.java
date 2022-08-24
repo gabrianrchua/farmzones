@@ -2,7 +2,6 @@ package com.cgixe.farmzones.types;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class FzManager implements Serializable {
                 return p;
             }
         }
-        // automatically add player to db if doesn't exist
+        // automatically add player to db if it doesn't exist
         FzPlayer newPlayer = new FzPlayer(name);
         addPlayer(newPlayer);
         return newPlayer;

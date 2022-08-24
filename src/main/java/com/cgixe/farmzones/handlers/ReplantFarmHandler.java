@@ -1,5 +1,6 @@
 package com.cgixe.farmzones.handlers;
 
+import com.cgixe.farmzones.Farmzones;
 import com.cgixe.farmzones.types.CropType;
 import com.cgixe.farmzones.types.FzFarm;
 import com.cgixe.farmzones.types.FzLocation;
@@ -11,14 +12,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.Collection;
-import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.cgixe.farmzones.Farmzones.manager;
 
 public class ReplantFarmHandler {
-    /***
+    /**
      * Replants a player's farm with the user-set crops
      * @param player The player who owns the farm
      * @param farmName The name of the farm
@@ -28,27 +28,34 @@ public class ReplantFarmHandler {
         FzFarm farm = manager.getPlayer(player.getName()).getFarm(farmName);
         if (farm == null) return -999;
 
-        EnumMap<CropType, Material> cropMapping = new EnumMap<>(CropType.class);
-        cropMapping.put(CropType.WHEAT, Material.WHEAT);
-        cropMapping.put(CropType.CARROT, Material.CARROTS);
-        cropMapping.put(CropType.POTATO, Material.POTATOES);
-        cropMapping.put(CropType.BEETROOT, Material.BEETROOTS);
-        cropMapping.put(CropType.NETHERWART, Material.NETHER_WART);
-
-        EnumMap<CropType, Material> seedMapping = new EnumMap<>(CropType.class);
-        seedMapping.put(CropType.WHEAT, Material.WHEAT_SEEDS);
-        seedMapping.put(CropType.CARROT, Material.CARROT);
-        seedMapping.put(CropType.POTATO, Material.POTATO);
-        seedMapping.put(CropType.BEETROOT, Material.BEETROOT_SEEDS);
-        seedMapping.put(CropType.NETHERWART, Material.NETHER_WART);
-
         World world = player.getWorld();
         PlayerInventory inventory = player.getInventory();
+        return replantFarm(farm, world, inventory);
+    }
+
+    /**
+     * Replants all of a player's farms with the user-set crops
+     * @param player The player who owns the farms
+     * @return Returns an int representing the number of failed plantings (not enough items, not correct soil underneath, crop space wasn't empty)
+     */
+    public static int ReplantAllFarms(Player player) {
+        List<FzFarm> farms = manager.getPlayer(player.getName()).getFarms();
+        World world = player.getWorld();
+        PlayerInventory inventory = player.getInventory();
+
+        int totalFailedPlantings = 0;
+        for (FzFarm farm : farms) {
+            totalFailedPlantings += replantFarm(farm, world, inventory);
+        }
+        return totalFailedPlantings;
+    }
+
+    private static int replantFarm(FzFarm farm, World world, PlayerInventory inventory) {
         int failedPlantCounter = 0;
         for (FzZone zone : farm.getZones()) {
             CropType fzCropType = zone.getCropType();
-            Material cropMaterial = cropMapping.get(fzCropType);
-            Material seed = seedMapping.get(fzCropType);
+            Material cropMaterial = Farmzones.cropMapping.get(fzCropType);
+            Material seed = Farmzones.seedMapping.get(fzCropType);
 
             FzLocation pos1 = zone.getPos1();
             FzLocation pos2 = zone.getPos2();
