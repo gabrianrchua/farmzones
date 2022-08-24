@@ -54,6 +54,26 @@ Reap the rewards!
 
 `/farmzones replant myfarm` - replants the farm, taking the necessary seeds from your inventory. Will not replant if you don't have enough seeds, the crop blocks aren't empty, or there isn't farmland under the crop blocks.
 
+### Reap the rewards even faster!
+
+Harvesting and replanting farms _still_ too slow for you?
+
+`/farmzones harvest-replant` - harvest and replant a farm in one step.
+
+`/farmzones harvest-all` - harvest all your farms and give the results to your inventory.
+
+`/farmzones replant-all` - replant all your farms, taking the necessary seeds from your inventory.
+
+`/farmzones harvest-replant-all` - the big one! harvest and replant all your farms in one swift step.
+
+### Tired of waiting around?
+
+Quickly apply bonemeal to your crops!
+
+`/farmzones bonemeal [farm name]` - fully grow the crops in a farm, taking the necessary bonemeal from your inventory.
+
+`/farmzones bonemeal-all` - fully grow all crops in all your farms in one swift step.
+
 ### View your farm details
 
 `/farmzones list` - view a listing of all your farms
@@ -62,6 +82,17 @@ Reap the rewards!
 
 ## Deploy
 
-Simply download the plugin jar and paste it into your `plugins` directory. FarmZones will handle the rest!
+Simply download the plugin jar from [releases](https://github.com/gabrianrchua/farmzones/releases) and paste it into your `plugins` directory. FarmZones will handle the rest!
 
 See the config section below for settings you can edit in config.yml.
+
+## Configuration
+
+Edit config.yml with new settings and then restart the server for them to take effect.
+
+| Option                   | Type | Description                                     | Default Value |
+|--------------------------|------|-------------------------------------------------|---------------|
+| `max-num-zones`          | int  | The maximum number of zones a farm can have     | 30            |
+| `max-zone-size`          | int  | The maximum number of blocks a zone can contain | 500           |
+| `max-num-farms`          | int  | The maximum number of farms a player can own    | 50            |
+| `farm-autosave-interval` | int  | How often to autosave farms to disk (seconds)   | 43200         |
