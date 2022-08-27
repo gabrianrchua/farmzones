@@ -20,3 +20,4 @@ to-do:
 [X] fix bug when detailing thing when null zone (add "unassigned" message and red/orange)
 [X] add check for isComplete() before harvesting or replanting zones
 [X] implement all features
+[ ] async? to prevent significant lag in server thread
