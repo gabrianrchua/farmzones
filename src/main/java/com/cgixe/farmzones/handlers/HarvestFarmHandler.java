@@ -1,23 +1,18 @@
 package com.cgixe.farmzones.handlers;
 
+import com.cgixe.farmzones.handlers.runnables.HarvestFarmRunnable;
 import com.cgixe.farmzones.types.FzFarm;
-import com.cgixe.farmzones.types.FzLocation;
-import com.cgixe.farmzones.types.FzZone;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.cgixe.farmzones.Farmzones.manager;
 
 public class HarvestFarmHandler {
-    private static final Material[] validCrops = {
+    public static final Material[] validCrops = {
             Material.WHEAT,
             Material.CARROTS,
             Material.POTATOES,
@@ -36,7 +31,7 @@ public class HarvestFarmHandler {
 
         World world = player.getWorld();
         PlayerInventory inventory = player.getInventory();
-        harvestFarm(farm, world, inventory, player);
+        new HarvestFarmRunnable(farm, world, inventory, player).run();
         return true;
     }
 
@@ -51,66 +46,8 @@ public class HarvestFarmHandler {
 
         List<FzFarm> farms = manager.getPlayer(player.getName()).getFarms();
         for (FzFarm farm : farms) {
-            harvestFarm(farm, world, inventory, player);
+            new HarvestFarmRunnable(farm, world, inventory, player).run();
         }
-        return farms.size();
-    }
-
-    private static void harvestFarm(FzFarm farm, World world, PlayerInventory inventory, Player player) {
-        for (FzZone zone : farm.getZones()) {
-            FzLocation pos1 = zone.getPos1();
-            FzLocation pos2 = zone.getPos2();
-            if (pos1 == null || pos2 == null) {
-                // skip the zone, it is not complete
-                break;
-            }
-            int startX, endX, startY, endY, startZ, endZ;
-            // x coordinate
-            if (pos1.getX() <= pos2.getX()) {
-                startX = pos1.getX();
-                endX = pos2.getX();
-            } else {
-                startX = pos2.getX();
-                endX = pos1.getX();
-            }
-            // y coordinate
-            if (pos1.getY() <= pos2.getY()) {
-                startY = pos1.getY();
-                endY = pos2.getY();
-            } else {
-                startY = pos2.getY();
-                endY = pos1.getY();
-            }
-            // z coordinate
-            if (pos1.getZ() <= pos2.getZ()) {
-                startZ = pos1.getZ();
-                endZ = pos2.getZ();
-            } else {
-                startZ = pos2.getZ();
-                endZ = pos1.getZ();
-            }
-            for (int y = startY; y <= endY; y++) {
-                for (int x = startX; x <= endX; x++) {
-                    for (int z = startZ; z <= endZ; z++) {
-                        Block block = world.getBlockAt(x, y, z);
-                        Material blockMaterial = block.getType();
-                        for (Material valid : validCrops) {
-                            if (valid == blockMaterial) {
-                                Collection<ItemStack> drops = block.getDrops();
-                                HashMap<Integer, ItemStack> surplusItems = inventory.addItem(drops.toArray(new ItemStack[0]));
-                                if (!surplusItems.isEmpty()) {
-                                    // drop surplus items on the ground
-                                    for (ItemStack stack : surplusItems.values()) {
-                                        world.dropItem(player.getLocation(), stack);
-                                    }
-                                }
-                                block.setType(Material.AIR);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        return farms.size(); // not possible that a farm doesn't exist; just return the size()
     }
 }
